@@ -10,8 +10,8 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true,
         validate: {
-            validator: v => /^(http|https):\/\/[^ "]+$/.test(v),
-            message: props => `${props.value} is not a valid URL!`
+            validator: v => /^\/images\/[^ "]+\.png$|^https?:\/\/[^ "]+$/.test(v),
+            message: props => `${props.value} is not a valid image path or URL!`
         }
     },
     category: {
