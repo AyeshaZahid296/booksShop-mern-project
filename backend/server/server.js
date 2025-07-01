@@ -24,6 +24,11 @@ app.use(express.json());
 // Serve static images
 app.use('/images', express.static(path.join(__dirname, '../images')));
 
+// default route
+// app.use('/', (req, res) => {
+//     res.send("Api running....")
+// });
+
 // Routes
 app.use('/api/books', bookRoutes);
 

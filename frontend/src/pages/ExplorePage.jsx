@@ -1,232 +1,135 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-// import Navbar from '../components/Navbar';
-import BookCard from '../components/BookCard';
+import { useEffect, useState } from 'react';
 import { getBooks } from '../api/books';
+import BookSection from '../components/BookSection';
+
+const categoriesList = ['fiction', 'non-fiction', 'islamic', 'biography', 'self-help', 'academic', 'psychology'];
+const languagesList = ['english', 'urdu', 'arabic', 'french', 'spanish', 'german'];
 
 const ExplorePage = () => {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+    const [allBooks, setAllBooks] = useState([]); // All books fetched once
+    const [filteredBooks, setFilteredBooks] = useState([]); // Shown books
     const [filters, setFilters] = useState({
-        languages: [],
-        categories: []
+        categories: [],
+        languages: []
     });
 
-    // Available filter options
-    const languageOptions = ['English', 'Urdu', 'Arabic', 'French', 'Spanish', 'German'];
-    const categoryOptions = ['Psychology', 'Academic', 'Islamic', 'Fiction', 'Biography', 'Self-Help'];
-
-    const navigate = useNavigate();
-
+    // Fetch only once on mount
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                setLoading(true);
-                const query = {};
-
-                if (filters.languages.length > 0) {
-                    query.language = { $in: filters.languages };
-                }
-
-                if (filters.categories.length > 0) {
-                    query.category = { $in: filters.categories };
-                }
-
-                const data = await getBooks(page, 12, query);
-                setBooks(data.books);
-                setTotalPages(data.pages);
-                setLoading(false);
+                const data = await getBooks(1, 100); // No filters sent to backend
+                setAllBooks(data.books || []);
+                setFilteredBooks(data.books || []);
             } catch (err) {
-                setError(err.message);
-                setLoading(false);
+                console.error('Failed to fetch books:', err);
             }
         };
 
         fetchBooks();
-    }, [page, filters]);
+    }, []);
 
-    const handleLanguageChange = (language) => {
-        setFilters(prev => {
-            if (prev.languages.includes(language)) {
-                return {
-                    ...prev,
-                    languages: prev.languages.filter(lang => lang !== language)
-                };
-            } else {
-                return {
-                    ...prev,
-                    languages: [...prev.languages, language]
-                };
-            }
-        });
-        setPage(1); // Reset to first page when filters change
-    };
+    // Apply filters in frontend whenever filters OR books change
+    useEffect(() => {
+        let filtered = [];
 
-    const handleCategoryChange = (category) => {
+        if (filters.categories.length === 0 && filters.languages.length === 0) {
+            filtered = allBooks;
+        } else {
+            filtered = allBooks.filter(book => {
+                const matchCategory =
+                    filters.categories.length === 0 ||
+                    filters.categories.includes(book.category.toLowerCase());
+
+                const matchLanguage =
+                    filters.languages.length === 0 ||
+                    filters.languages.includes(book.language.toLowerCase());
+
+                // ✅ AND between groups (language + category), OR within each group
+                return (
+                    (filters.categories.length === 0 || matchCategory) &&
+                    (filters.languages.length === 0 || matchLanguage)
+                );
+            });
+        }
+
+        setFilteredBooks(filtered);
+    }, [filters, allBooks]);
+
+
+
+    const toggleFilter = (type, value) => {
         setFilters(prev => {
-            if (prev.categories.includes(category)) {
-                return {
-                    ...prev,
-                    categories: prev.categories.filter(cat => cat !== category)
-                };
-            } else {
-                return {
-                    ...prev,
-                    categories: [...prev.categories, category]
-                };
-            }
+            const current = prev[type];
+            const updated = current.includes(value)
+                ? current.filter(item => item !== value)
+                : [...current, value];
+            return { ...prev, [type]: updated };
         });
-        setPage(1); // Reset to first page when filters change
     };
 
     const resetFilters = () => {
-        setFilters({
-            languages: [],
-            categories: []
-        });
-        setPage(1);
+        setFilters({ categories: [], languages: [] });
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    const isSelected = (type, value) => filters[type].includes(value);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* <Navbar isExplorePage={true} /> */}
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-800 pt-4">
+            <div className="container mx-auto px-4 mb-6">
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">Explore Books</h1>
 
-            <main className="container mx-auto px-4 py-8">
-                <div className="flex flex-col md:flex-row gap-8">
-                    {/* Filters Sidebar */}
-                    <div className="w-full md:w-64 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-                        <div className="mb-6">
-                            <h3 className="font-bold text-lg mb-3 text-gray-800 dark:text-white">Languages</h3>
-                            <div className="space-y-2">
-                                {languageOptions.map(language => (
-                                    <div key={language} className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            id={`lang-${language}`}
-                                            checked={filters.languages.includes(language)}
-                                            onChange={() => handleLanguageChange(language)}
-                                            className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500"
-                                        />
-                                        <label htmlFor={`lang-${language}`} className="ml-2 text-gray-700 dark:text-gray-300">
-                                            {language}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="mb-6">
-                            <h3 className="font-bold text-lg mb-3 text-gray-800 dark:text-white">Categories</h3>
-                            <div className="space-y-2">
-                                {categoryOptions.map(category => (
-                                    <div key={category} className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            id={`cat-${category}`}
-                                            checked={filters.categories.includes(category)}
-                                            onChange={() => handleCategoryChange(category)}
-                                            className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500"
-                                        />
-                                        <label htmlFor={`cat-${category}`} className="ml-2 text-gray-700 dark:text-gray-300">
-                                            {category}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={resetFilters}
-                            className="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white py-2 px-4 rounded"
-                        >
-                            Reset Filters
-                        </button>
-                    </div>
-
-                    {/* Books Grid */}
-                    <div className="flex-1">
-                        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-                            Explore Books
-                            {filters.languages.length > 0 || filters.categories.length > 0 ? (
-                                <span className="text-sm ml-2 text-gray-500 dark:text-gray-400">
-                                    (Filtered results)
-                                </span>
-                            ) : null}
-                        </h2>
-
-                        {books.length === 0 ? (
-                            <div className="text-center py-12">
-                                <p className="text-gray-600 dark:text-gray-400">No books found matching your filters.</p>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <div className="flex flex-col gap-4">
+                        {/* Category Filters */}
+                        <div className="flex flex-wrap gap-2">
+                            {categoriesList.map(category => (
                                 <button
-                                    onClick={resetFilters}
-                                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded"
+                                    key={category}
+                                    onClick={() => toggleFilter('categories', category)}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium border ${isSelected('categories', category)
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white border-gray-300'
+                                        }`}
                                 >
-                                    Reset Filters
+                                    {category}
                                 </button>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                    {books.map(book => (
-                                        <BookCard key={book._id} book={book} />
-                                    ))}
-                                </div>
+                            ))}
+                        </div>
 
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <div className="flex justify-center mt-8">
-                                        <nav className="inline-flex rounded-md shadow">
-                                            <button
-                                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                                disabled={page === 1}
-                                                className="px-3 py-2 rounded-l-md border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
-                                            >
-                                                Previous
-                                            </button>
-                                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                                // Show pages around current page
-                                                let pageNum;
-                                                if (totalPages <= 5) {
-                                                    pageNum = i + 1;
-                                                } else if (page <= 3) {
-                                                    pageNum = i + 1;
-                                                } else if (page >= totalPages - 2) {
-                                                    pageNum = totalPages - 4 + i;
-                                                } else {
-                                                    pageNum = page - 2 + i;
-                                                }
-
-                                                return (
-                                                    <button
-                                                        key={pageNum}
-                                                        onClick={() => setPage(pageNum)}
-                                                        className={`px-3 py-2 border-t border-b border-gray-300 ${page === pageNum ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'}`}
-                                                    >
-                                                        {pageNum}
-                                                    </button>
-                                                );
-                                            })}
-                                            <button
-                                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                                                disabled={page === totalPages}
-                                                className="px-3 py-2 rounded-r-md border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
-                                            >
-                                                Next
-                                            </button>
-                                        </nav>
-                                    </div>
-                                )}
-                            </>
-                        )}
+                        {/* Language Filters */}
+                        <div className="flex flex-wrap gap-2">
+                            {languagesList.map(language => (
+                                <button
+                                    key={language}
+                                    onClick={() => toggleFilter('languages', language)}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium border ${isSelected('languages', language)
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white border-gray-300'
+                                        }`}
+                                >
+                                    {language}
+                                </button>
+                            ))}
+                        </div>
                     </div>
+
+
+                    <button
+                        onClick={resetFilters}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm"
+                    >
+                        Reset Filters
+                    </button>
                 </div>
-            </main>
+
+                <BookSection title="Filtered Results" books={filteredBooks} />
+                {/* if no book matches filters */}
+                {filteredBooks.length === 0 && (
+                    <div className="text-center text-gray-600 dark:text-gray-300 mt-8 text-lg">
+                        No books found for these filters.
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
