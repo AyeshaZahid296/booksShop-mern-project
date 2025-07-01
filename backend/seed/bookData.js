@@ -6,7 +6,7 @@ const booksData = [
         description: "Biography of Prophet Muhammad (PBUH)...",
         price: 25.99,
         rating: 4.9,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51QnXuJxRQL._SY425_.jpg",
+        coverImage: "/images/the-sealed-nectar.webp",
         category: "islamic",
         language: "english",
         stock: 50
@@ -17,7 +17,7 @@ const booksData = [
         description: "Classic collection of hadith on ethics...",
         price: 18.50,
         rating: 4.8,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/41X5Y5GZ5ZL._SY425_.jpg",
+        coverImage: "/images/riyadus-saliheen.jpg",
         category: "islamic",
         language: "english",
         stock: 35
@@ -28,7 +28,7 @@ const booksData = [
         description: "Explores the two systems that drive the way we think...",
         price: 12.99,
         rating: 4.6,
-        coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bc/Thinking,_Fast_and_Slow.png/220px-Thinking,_Fast_and_Slow.png",
+        coverImage: "/images/thinking-fast-and-slow.webp",
         category: "psychology",
         language: "english",
         stock: 40
@@ -39,7 +39,7 @@ const booksData = [
         description: "Explores the science behind why habits exist and how they can be changed.",
         price: 11.25,
         rating: 4.5,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51e7Zqk0QRL._SY425_.jpg",
+        coverImage: "/images/the-power-of-habit.jpg",
         category: "psychology",
         language: "english",
         stock: 30
@@ -50,7 +50,7 @@ const booksData = [
         description: "Comprehensive calculus textbook with clear explanations...",
         price: 199.99,
         rating: 4.7,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51Q5ZQ5ZQZL._SY425_.jpg",
+        coverImage: "/images/calculus-early-transcendentals.jpg",
         category: "academic",
         language: "english",
         stock: 20
@@ -61,7 +61,7 @@ const booksData = [
         description: "Introductory economics textbook that explains fundamental economic concepts.",
         price: 149.99,
         rating: 4.6,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51Q5ZQ5ZQZL._SY425_.jpg",
+        coverImage: "/images/principles-of-economics.jpg",
         category: "academic",
         language: "english",
         stock: 25
@@ -72,7 +72,7 @@ const booksData = [
         description: "A shepherd boy's journey to find worldly treasure...",
         price: 9.99,
         rating: 4.7,
-        coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Alchemist_Paulo_Coelho.jpg/220px-Alchemist_Paulo_Coelho.jpg",
+        coverImage: "/images/the-alchemist.jpg",
         category: "fiction",
         language: "english",
         stock: 60
@@ -94,7 +94,7 @@ const booksData = [
         description: "Powerful story of the African-American activist's life...",
         price: 12.99,
         rating: 4.8,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51Q5ZQ5ZQZL._SY425_.jpg",
+        coverImage: "/images/the-autobiography-of-malcolm-x.jpg",
         category: "biography",
         language: "english",
         stock: 30
@@ -105,7 +105,7 @@ const booksData = [
         description: "Autobiography of the anti-apartheid revolutionary...",
         price: 14.95,
         rating: 4.9,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51Q5ZQ5ZQZL._SY425_.jpg",
+        coverImage: "/images/long-walk-to-freedom.jpg",
         category: "biography",
         language: "english",
         stock: 25
@@ -116,7 +116,7 @@ const booksData = [
         description: "A guide to building good habits and breaking bad ones through tiny changes.",
         price: 11.99,
         rating: 4.8,
-        coverImage: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Atomic_habits.jpg",
+        coverImage: "/images/atomic-habits.jpg",
         category: "self-help",
         language: "english",
         stock: 55
@@ -127,7 +127,7 @@ const booksData = [
         description: "Classic book presenting a principle-centered approach...",
         price: 15.99,
         rating: 4.7,
-        coverImage: "https://images-na.ssl-images-amazon.com/images/I/51mrxsGveoL._SY425_.jpg",
+        coverImage: "/images/the-7-habits-of-highly-effective-people.png",
         category: "self-help",
         language: "english",
         stock: 40

@@ -5,12 +5,12 @@ const HeroSlider = () => {
 
     useEffect(() => {
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        setImageUrl(`${baseUrl}/images/bg-image.jpg`);
+        setImageUrl(`${baseUrl}/images/main.avif`);
     }, []);
 
     return (
         <div
-            className="relative h-[32rem] bg-cover bg-center flex items-end
+            className="relative h-[32rem] bg-contain bg-center flex items-end
             "
             style={{ backgroundImage: `url(${imageUrl})` }}
         >

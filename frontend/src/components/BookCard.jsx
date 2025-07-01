@@ -1,27 +1,69 @@
-import { FaStar } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaStar, FaShoppingCart } from 'react-icons/fa';
 
 const BookCard = ({ book }) => {
+    const [loaded, setLoaded] = useState(false);
+    const [error, setError] = useState(false);
+
+    const handleLoad = () => setLoaded(true);
+    const handleError = () => setError(true);
+
+    const imageSrc = error
+        ? ''
+        : book.coverImage.startsWith('http')
+            ? book.coverImage
+            : `http://localhost:5000${book.coverImage}`;
+
     return (
-        <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-            <img
-                src={book.coverImage}
-                alt={book.title}
-                className="w-full h-48 object-cover"
-                loading="lazy"
-            />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-100 dark:border-gray-700">
+            {/* Image Section */}
+            <div className="relative w-full h-70 border-b-2 border-gray-100 bg-gray-200 dark:bg-gray-700">
+                {!loaded && (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+                        Loading image...
+                    </div>
+                )}
+                {!error && (
+                    <img
+                        src={imageSrc}
+                        alt={book.title}
+                        className={`w-full h-full object-cover transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+                        onLoad={handleLoad}
+                        onError={handleError}
+                        loading="lazy"
+                    />
+                )}
+
+                {/* Rating Badge */}
+                <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-yellow-400 text-xs font-medium px-2 py-1 rounded-lg flex items-center gap-1 shadow">
+                    <FaStar className="text-yellow-400" />
+                    {book.rating}
+                </div>
+
+                {/* Price Badge */}
+                <div className="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow">
+                    ${book.price.toFixed(2)}
+                </div>
+
+                {/* Cart Icon */}
+                <button
+                    title="Add to Cart"
+                    className="absolute bottom-2 right-2 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-300 p-2 rounded-full shadow hover:bg-indigo-600 hover:text-white transition-colors"
+                >
+                    <FaShoppingCart className="w-4 h-4" />
+                </button>
+            </div>
+
+            {/* Book Info */}
             <div className="p-4">
-                <h3 className="font-semibold text-lg text-gray-800 dark:text-white line-clamp-1">{book.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mb-2 line-clamp-1">{book.author}</p>
-                <div className="flex items-center text-sm mb-2">
-                    <FaStar className="text-yellow-400 mr-1" />
-                    <span className="text-gray-700 dark:text-gray-200">{book.rating}</span>
+                <div className="flex items-center justify-between">
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
+                        {book.title}
+                    </h3>
                 </div>
-                <div className="flex justify-between items-center">
-                    <span className="font-bold text-indigo-600 dark:text-indigo-400">${book.price.toFixed(2)}</span>
-                    <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-sm">
-                        Add to Cart
-                    </button>
-                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-300 truncate">
+                    {book.author}
+                </p>
             </div>
         </div>
     );
