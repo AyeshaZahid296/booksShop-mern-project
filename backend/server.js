@@ -18,8 +18,13 @@ if (!MONGODB_URI) {
 }
 
 // Middleware
-// app.use(cors({ origin: process.env.FRONT_END_URL }));
-app.use(cors());
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); // or replace * with frontend domain for security
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    next();
+});
+
 app.use(express.json());
 
 // Serve static images
