@@ -18,11 +18,12 @@ if (!MONGODB_URI) {
 }
 
 // Middleware
-app.use(cors({ origin: process.env.FRONT_END_URL }));
+// app.use(cors({ origin: process.env.FRONT_END_URL }));
+app.use(cors());
 app.use(express.json());
 
 // Serve static images
-app.use('/images', express.static(path.join(__dirname, '../images')));
+app.use('/images', express.static(path.join(__dirname, './images')));
 
 // default route
 // app.use('/', (req, res) => {
