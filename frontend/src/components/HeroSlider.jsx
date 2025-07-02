@@ -10,7 +10,7 @@ const HeroSlider = () => {
 
     return (
         <div
-            className="relative h-[32rem] bg-contain bg-center flex items-end
+            className="relative h-[32rem] bg-contain bg-no-repeat bg-center flex items-end
             "
             style={{ backgroundImage: `url(${imageUrl})` }}
         >
