@@ -32,9 +32,9 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, './images')));
 
 // default route
-// app.use('/', (req, res) => {
-//     res.send("Api running....")
-// });
+app.use('/', (req, res) => {
+    res.send("Api running....")
+});
 
 // Routes
 app.use('/api/books', bookRoutes);
