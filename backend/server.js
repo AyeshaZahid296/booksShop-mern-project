@@ -7,6 +7,7 @@ require('dotenv').config();
 const bookRoutes = require('./routes/bookRoutes');
 const Book = require('./models/Book');
 const seedDB = require('./seed/seedDB');
+app.use(cors(process.env.FRONT_END_URL));
 
 const app = express();
 const PORT = process.env.PORT || 5000;
